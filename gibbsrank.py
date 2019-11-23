@@ -27,7 +27,6 @@ def gibbs_sample(game_mat: np.ndarray, num_players: int, num_iter: int):
         t = np.zeros((n_games, 1))
         for g in range(n_games):
             s = w[game_mat[g, 0]] - w[game_mat[g, 1]]  # skill difference
-            print(s)
             t[g] = s + np.random.randn()  # Sample performance
             while t[g] < 0:  # rejection step
                 t[g] = s + np.random.randn()  # resample if rejected
@@ -35,7 +34,7 @@ def gibbs_sample(game_mat: np.ndarray, num_players: int, num_iter: int):
         # Jointly sample skills given performance differences
         m = np.zeros((num_players, 1))  # the intermediate skill mean
         for p in range(num_players):
-            m[p] = (((game_mat[:, 0] == p).astype(np.float32) - (game_mat[:, 1] == p).astype(np.float32)) * t).sum()
+            m[p] = (((game_mat[:, 0] == p).astype(np.float32) - (game_mat[:, 1] == p).astype(np.float32)) * t[:, 0]).sum()
             # Note that prior mean is zero -> prior term not needed
         iS = np.zeros((num_players, num_players))  # Container for sum of precision matrices (likelihood terms)
 
